@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<body style="font-family:sans-serif;margin:40px;">
+  <h2>Connector Dashboard</h2>
+
+  {% if user_id %}
+    <h3>Welcome, {{ user_id }}</h3>
+  {% endif %}
+
+  {% if error %}
+    <p style="color:red;">{{ error }}</p>
+  {% elif user_info %}
+    <h4>User Info</h4>
+    <table border="1" cellpadding="6" cellspacing="0">
+      <tr><th>Field</th><th>Value</th></tr>
+      {% for key, val in user_info.items() %}
+        <tr><td>{{ key }}</td><td><pre>{{ val }}</pre></td></tr>
+      {% endfor %}
+    </table>
+    <!-- ▼▼▼ ここから追加部分 ▼▼▼ -->
+    {% if registry_info %}
+    <h4 style="margin-top:40px;">Public Key Registry に登録されたユーザー情報一覧</h4>
+    <table border="1" cellpadding="6" cellspacing="0">
+      <tr><th>User ID</th><th>Public Key</th></tr>
+      {% for item in registry_info %}
+      <tr>
+        <td>{{ item.user_id }}</td>
+        <td><pre>{{ item.public_key }}</pre></td>
+	<td><pre>{{ item.registered_at }}</pre></td>
+      </tr>
+      {% endfor %}  
+    </table>
+    {% endif %}
+    {% if search_result %}
+    <h4 style="margin-top:40px;">検索結果（{{ search_result.query_value }}）</h4>
+  <p>検索タイプ: {{ search_result.query_type }} ／ 件数: {{ search_result.count }}</p>
+  
+  {% if search_result.results and search_result.results|length > 0 %}
+  <table border="1" cellpadding="6" cellspacing="0">
+    <tr>
+      <th>Data ID</th>
+      <th>User ID</th>
+      <th>Description</th>
+      <th>Endpoint</th>
+      <th>Created At</th>
+    </tr>
+    {% for item in search_result.results %}
+    <tr>
+      <td>{{ item.data_id }}</td>
+      <td>{{ item.user_id }}</td>
+      <td>{{ item.description }}</td>
+      <td><a href="{{ item.endpoint }}" target="_blank">{{ item.endpoint }}</a></td>
+      <td>{{ item.created_at }}</td>
+    </tr>
+    {% endfor %}
+  </table>
+  {% else %}
+  <p>該当データはありません。</p>
+  {% endif %}
+  {% endif %}
+    
+  {% else %}
+  <p>
+    No user data. Please
+    <a href="/login">login</a>
+    or
+    <a href="/register">register</a>.
+  </p>
+  {% endif %}
+</body>
+</html>

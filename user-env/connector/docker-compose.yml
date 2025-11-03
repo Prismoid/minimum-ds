@@ -1,0 +1,18 @@
+version: "3.9"
+
+services:
+  connector:
+    build: .
+    container_name: connector
+    ports:
+      - "51000:51000"
+    environment:
+      # 同一ホスト上の public-key-registry に接続
+      PUBLIC_KEY_REGISTRY_URL: "http://host.docker.internal:60000"
+      FEDERATED_CATALOG_URL: "http://host.docker.internal:61000"
+    extra_hosts:
+      # Linux環境対応
+      - "host.docker.internal:host-gateway"
+    volumes:
+      - ./app/users:/app/app/users
+      - ./app/keys:/app/app/keys

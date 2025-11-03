@@ -1,0 +1,13 @@
+version: "3.9"
+
+services:
+  webapp:
+    build: .
+    container_name: webapp
+    ports:
+      - "50000:50000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"  # Linux環境対応
+    volumes:
+      - ./templates:/app/templates
+      - ./main.py:/app/main.py

@@ -1,0 +1,35 @@
+version: "3.9"
+
+services:
+  local-catalog-authz:
+    build: .
+    container_name: local-catalog-authz
+    ports:
+      - "52000:52000"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: local_catalog_authz_db
+      DB_HOST: db
+      # 今後デジタル署名検証に利用予定
+      PUBLIC_KEY_REGISTRY_URL: "http://host.docker.internal:60000"
+    depends_on:
+      - db
+    extra_hosts:
+      # Linux対応: host.docker.internal を解決可能に
+      - "host.docker.internal:host-gateway"
+
+  db:
+    image: postgres:16
+    container_name: local-catalog-authz-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: local_catalog_authz_db
+    ports:
+      - "5436:5432"
+    volumes:
+      - pgdata_local_catalog_authz:/var/lib/postgresql/data
+
+volumes:
+  pgdata_local_catalog_authz:

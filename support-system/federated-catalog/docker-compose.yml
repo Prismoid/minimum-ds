@@ -1,0 +1,30 @@
+version: "3.9"
+
+services:
+  federated-catalog:
+    build: .
+    container_name: federated-catalog
+    ports:
+      - "61000:61000"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: federated_catalog_db
+      DB_HOST: db
+      # 同一ホスト上の public-key-registry に接続
+      PUBLIC_KEY_REGISTRY_URL: "http://host.docker.internal:60000"
+    depends_on:
+      - db
+    extra_hosts:
+      # Linux環境対応
+      - "host.docker.internal:host-gateway"  
+
+  db:
+    image: postgres:16
+    container_name: federated-catalog-db
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: federated_catalog_db
+    ports:
+      - "5433:5432"
